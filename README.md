@@ -22,6 +22,7 @@ Currently this loader is specific for the following list of games:
 15. Haruoto Alice Gram Snow Drop (CUSA14324)
 16. Tonari ni Kanojo no Iru Shiawase Winter Guest (CUSA11977)
 17. Mikagami Sumika no Seifuku Katsudou (CUSA11481)
+18. Aerial Life (CUSA17122)
 
 For guide on how to setup this loader, please refer [SETUP.md](SETUP.md)
 
