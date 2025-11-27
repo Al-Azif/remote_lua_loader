@@ -23,7 +23,7 @@ ps5_kernel_offset_list = {
         PMAP_STORE_DMPML4I = 0x288,
         PMAP_STORE_DMPDPI = 0x28C,
     },
-    
+
     [{ "1.05", "1.10", "1.11", "1.12", "1.13", "1.14" }] = {
 
         DATA_BASE = 0x01B40000,
@@ -42,7 +42,7 @@ ps5_kernel_offset_list = {
         PMAP_STORE_DMPML4I = 0x288,
         PMAP_STORE_DMPDPI = 0x28C,
     },
-    
+
     [{ "2.00", "2.20", "2.25", "2.26", "2.30", "2.50", "2.70" }] = {
 
         DATA_BASE = 0x01B80000,
@@ -137,7 +137,7 @@ ps5_kernel_offset_list = {
         PMAP_STORE_DMPML4I = 0x29C,
         PMAP_STORE_DMPDPI = 0x2A0,
     },
-    
+
     [{ "6.00", "6.02", "6.50" }] = {
 
         DATA_BASE = 0x0C60000,  -- Unconfirmed
@@ -175,7 +175,7 @@ ps5_kernel_offset_list = {
         PMAP_STORE_DMPML4I = 0x29C,
         PMAP_STORE_DMPDPI = 0x2A0,
     },
-    
+
         [{ "8.00", "8.20", "8.40", "8.60" }] = {
 
         DATA_BASE = 0xC70000,
@@ -189,7 +189,7 @@ ps5_kernel_offset_list = {
         DATA_BASE_KERNEL_PMAP_STORE = 0x2E48848,
         DATA_BASE_DATA_CAVE = nil,
         DATA_BASE_GVMSPACE = 0x2EAA090,
-    
+
         PMAP_STORE_PML4PML4I = nil,
         PMAP_STORE_DMPML4I = nil,
         PMAP_STORE_DMPDPI = nil,
@@ -256,6 +256,62 @@ ps5_kernel_offset_list = {
 }
 
 ps4_kernel_offset_list = {
+    [{ "7.00", "7.01", "7.02" }] = {
+        EVF_OFFSET          = 0x7f92cb,
+        PRISON0             = 0x113e398,
+        ROOTVNODE           = 0x22c5750,
+        TARGET_ID_OFFSET    = 0x22fed8d,
+        SYSENT_661_OFFSET   = 0x112d250,
+        JMP_RSI_GADGET      = 0x6b192
+    },
+    [{ "7.50" }] = {
+        EVF_OFFSET          = 0x79a92e,
+        PRISON0             = 0x113b728,
+        ROOTVNODE           = 0x1b463e0,
+        TARGET_ID_OFFSET    = 0x22287cd,
+        SYSENT_661_OFFSET   = 0x1129f30,
+        JMP_RSI_GADGET      = 0x1f842
+    },
+    [{ "7.51", "7.55" }] = {
+        EVF_OFFSET          = 0x79a96e,
+        PRISON0             = 0x113b728,
+        ROOTVNODE           = 0x1b463e0,
+        TARGET_ID_OFFSET    = 0x22287cd,
+        SYSENT_661_OFFSET   = 0x1129f30,
+        JMP_RSI_GADGET      = 0x1f842
+    },
+    [{ "8.00", "8.01", "8.03" }] = {
+        EVF_OFFSET          = 0x7edcff,
+        PRISON0             = 0x111a7d0,
+        ROOTVNODE           = 0x1b8c730,
+        TARGET_ID_OFFSET    = 0x1b5158d,
+        SYSENT_661_OFFSET   = 0x11040c0,
+        JMP_RSI_GADGET      = 0xe629c
+    },
+    [{ "8.50", "8.52" }] = {
+        EVF_OFFSET          = 0x7da91c,
+        PRISON0             = 0x111a8f0,
+        ROOTVNODE           = 0x1c66150,
+        TARGET_ID_OFFSET    = 0x1c8338d,
+        SYSENT_661_OFFSET   = 0x11041b0,
+        JMP_RSI_GADGET      = 0xc810d
+    },
+    [{ "9.00" }] = {
+        EVF_OFFSET          = 0x7f6f27,
+        PRISON0             = 0x111f870,
+        ROOTVNODE           = 0x21eff20,
+        TARGET_ID_OFFSET    = 0x221688d,
+        SYSENT_661_OFFSET   = 0x1107f00,
+        JMP_RSI_GADGET      = 0x4c7ad
+    },
+    [{ "9.00" }] = {
+        EVF_OFFSET          = 0x7f6f27,
+        PRISON0             = 0x111f870,
+        ROOTVNODE           = 0x21eff20,
+        TARGET_ID_OFFSET    = 0x221688d,
+        SYSENT_661_OFFSET   = 0x1107f00,
+        JMP_RSI_GADGET      = 0x4c7ad
+    },
     [{ "9.00" }] = {
         EVF_OFFSET          = 0x7f6f27,
         PRISON0             = 0x111f870,
@@ -403,7 +459,7 @@ function get_ps4_kernel_offset()
     -- filedesc
     kernel_offset.FILEDESC_OFILES = 0x0
     kernel_offset.SIZEOF_OFILES = 0x8
-    
+
     -- vmspace structure
     kernel_offset.VMSPACE_VM_PMAP = -1
     kernel_offset.VMSPACE_VM_VMID = -1
@@ -440,11 +496,11 @@ end
 function find_vmspace_pmap_offset()
 
     local vmspace = kernel.read_qword(kernel.addr.curproc + kernel_offset.PROC_VM_SPACE)
-    
+
     -- Note, this is the offset of vm_space.vm_map.pmap on 1.xx.
     -- It is assumed that on higher firmwares it's only increasing.
     local cur_scan_offset = 0x1C8
-    
+
     for i=1,6 do
         local scan_val = kernel.read_qword(vmspace + cur_scan_offset + (i * 8))
         local offset_diff = (scan_val - vmspace):tonumber()
@@ -465,7 +521,7 @@ function find_vmspace_vmid_offset()
     -- Note, this is the offset of vm_space.vm_map.vmid on 1.xx.
     -- It is assumed that on higher firmwares it's only increasing.
     local cur_scan_offset = 0x1D4
-    
+
     for i=1,8 do
         local scan_offset = cur_scan_offset + (i * 4)
         local scan_val = kernel.read_dword(vmspace + scan_offset):tonumber()
